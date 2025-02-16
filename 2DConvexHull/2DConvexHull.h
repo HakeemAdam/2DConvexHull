@@ -3,6 +3,14 @@
 
 #include <SOP/SOP_Node.h>
 
+struct PointInfo
+{
+    GA_Offset offset;
+    float angle;
+
+    PointInfo(GA_Offset off, float angle) : offset(off), angle(angle) {}
+};
+
 class ConvexHull : public SOP_Node
 {
 public:
