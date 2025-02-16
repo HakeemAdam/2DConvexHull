@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\dirs\Houdini_CPP\FirstPlugin\2DConvexHull\2DConvexHull\2DConvexHull.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\dirs\Houdini_CPP\FirstPlugin\2DConvexHull\2DConvexHull\CMakeLists.Txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{1DC5213E-10EF-39E4-9CF1-9FEC73D26D6C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

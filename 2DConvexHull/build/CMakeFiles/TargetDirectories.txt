@@ -1,0 +1,3 @@
+D:/dirs/Houdini_CPP/FirstPlugin/2DConvexHull/2DConvexHull/build/CMakeFiles/2DConvexHull.dir
+D:/dirs/Houdini_CPP/FirstPlugin/2DConvexHull/2DConvexHull/build/CMakeFiles/ALL_BUILD.dir
+D:/dirs/Houdini_CPP/FirstPlugin/2DConvexHull/2DConvexHull/build/CMakeFiles/ZERO_CHECK.dir

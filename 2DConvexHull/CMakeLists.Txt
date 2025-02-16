@@ -1,0 +1,34 @@
+﻿project(2DConvexHull)
+
+cmake_policy(SET CMP0091 NEW)
+
+set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(HFS "C:/Program Files/Side Effects Software/Houdini 20.5.487")
+set(Houdini_PATH ${HFS})
+set(Houdini_DIR ${Houdini_PATH}/toolkit/cmake)
+
+
+set(HOUDINI_DSO_PATH "C:/Users/mansa/OneDrive/Documents/houdini20.5/dso")
+
+find_package(Houdini REQUIRED)
+add_library(2DConvexHull SHARED 2DConvexHull.cpp)
+
+set_target_properties(2DConvexHull PROPERTIES
+    PREFIX ""
+    SUFFIX ".dll"
+)
+
+# Link against Houdini libraries
+target_link_libraries(2DConvexHull
+    Houdini
+)
+
+# Add Houdini binary paths to the system PATH during build
+set(ENV{PATH} "${HFS}/bin;${HFS}/toolkit/bin;$ENV{PATH}")
+
+# Print some helpful information
+message(STATUS "Using Houdini installation: ${HFS}")
+message(STATUS "DSO output directory: ${HOUDINI_DSO_PATH}")
