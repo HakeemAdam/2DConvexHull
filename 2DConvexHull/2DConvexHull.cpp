@@ -4,6 +4,9 @@
 #define M_PI 3.14159265358979323846
 
 
+#include "2DConvexHull.h"
+#include "2DConvexHull.h"
+
 #include <UT/UT_DSOVersion.h>
 #include "2DConvexHull.h"
 
@@ -13,16 +16,29 @@
 #include <OP/OP_AutoLockInputs.h>
 
 #include <GU/GU_Detail.h>
-#include <GU/GU_PrimPoly.h>
+#include <GEO/GEO_PrimPoly.h>
+#include <GEO/GEO_PrimType.h>
 
 #include <PRM/PRM_Include.h>
 #include  <PRM/PRM_Default.h>
 #include <PRM/PRM_Template.h>
 
+static  PRM_Name parmNames[]=
+    {
+    PRM_Name("debug", "Debug"),
+    PRM_Name(0)
+    };
+
+
+static PRM_Default parmDefaults[]=
+    {
+    PRM_Default(0)
+    };
+
 
 static  PRM_Template convexHullParms[]=
     {
-    
+        PRM_Template(PRM_TOGGLE, 1, &parmNames[0],parmDefaults),    
         PRM_Template()
     };
 
@@ -77,6 +93,10 @@ OP_ERROR ConvexHull::cookMySop(OP_Context& context)
 
  
     GA_RWHandleF handle = gdp->addFloatTuple(GA_ATTRIB_POINT, "angle",1);
+
+    GA_Offset firstPoint = gdp->pointIndex(0);
+    hullpoints.push_back(firstPoint);
+    
     for(GA_Iterator it(pts_range); !it.atEnd(); ++it)
          {
              GA_Offset ptoff = *it;
@@ -98,12 +118,15 @@ OP_ERROR ConvexHull::cookMySop(OP_Context& context)
                  }
              }
          }
+
+    // sort points based on angle. use point struct to track angle and index
     std::sort(point_infos.begin(), point_infos.end(),
         [](const PointInfo& a, const PointInfo& b)
         {
             return a.angle < b.angle;
         });
 
+    // take 3 point pairs and find if angle is clockwise or anticlockwise and pop into array
     for (const auto& p : point_infos)
     {
         UT_Vector3 current = pos_h.get(p.offset);
@@ -128,15 +151,25 @@ OP_ERROR ConvexHull::cookMySop(OP_Context& context)
     {
         hullpoints.push_back(hullpoints[0]);
     }
-    
-   /* GU_PrimPoly *line = GU_PrimPoly::build(gdp, hullpoints.size(), GU_POLY_OPEN);
-    for (size_t i = 0; i < hullpoints.size(); ++i)
+
+    // Debug draw convex hull
+    fpreal now = context.getTime();
+    int toggleDebug = evalInt("debug",0, now);
+    if (toggleDebug==1)
     {
-        line->setPointOffset(i, hullpoints[i]);
-    }*/
-    
+        GEO_PrimPoly* line = static_cast<GEO_PrimPoly*>(gdp->appendPrimitive(GA_PRIMPOLY));
+        line->setSize(0);
 
+        for (const GA_Offset& offset : hullpoints)
+        {
+            GA_Index idx = gdp->pointIndex(offset);
+            line->appendVertex(idx);
+        }
 
+        gdp->getAttributes().bumpAllDataIds(GA_ATTRIB_VERTEX);
+        gdp->getAttributes().bumpAllDataIds(GA_ATTRIB_PRIMITIVE);
+        gdp->getPrimitiveList().bumpDataId();
+    }
     return error();
 }
 
